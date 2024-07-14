@@ -1,31 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PetConnect.API.Contracts;
-using PetConnect.Infrastructure;
+﻿using Contracts.Requests;
+using Microsoft.AspNetCore.Mvc;
+using PetConnect.Application;
 
 namespace PetConnect.API.Controllers;
 
+/// <summary>
+/// Контроллер для взаимодействия с сущностями животных.
+/// </summary>
 [ApiController]
 [Route("[controller]")]
-public class PetController : ControllerBase
-{ 
-    private readonly PetConnectDbContext _dbContext;
-
-    public PetController(PetConnectDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Get()
-    {
-        return Ok();
-    }
-
-
-
+public class PetController(PetsService petService) : ControllerBase
+{
+    /// <summary>
+    /// Добавляет информацию о животном в систему.
+    /// </summary>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreatePetRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<Guid>> Create([FromBody] CreatePetRequest request, CancellationToken cancellationToken)
     {
-        return Ok();
+        var idResult = await petService.CreatePet(request, cancellationToken);
+
+        if (idResult.IsFailure)
+            return BadRequest(idResult.Error);
+
+        return Ok(idResult.Value);
     }
 }
