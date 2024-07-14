@@ -1,4 +1,7 @@
-﻿namespace PetConnect.Domain.ValueObjects;
+﻿using CSharpFunctionalExtensions;
+using PetConnect.Domain.Common;
+
+namespace PetConnect.Domain.ValueObjects;
 
 /// <summary>
 /// Value-object места, в котором находится животное.
@@ -26,24 +29,22 @@ public record Place
     /// </summary>
     public string Value { get; }
 
-    public Place(string value) => Value = value;
+    private Place(string value) => Value = value;
 
 
     /// <summary>
-    /// Создает новый вариант места.
+    /// Создает value-object места.
     /// </summary>
-    public static Place Create(string input)
+    public static Result<Place, Error> Create(string place)
     {
-        if (string.IsNullOrWhiteSpace(input))
-            throw new ArgumentNullException(nameof(input));
+        if (string.IsNullOrWhiteSpace(place))
+            return Errors.General.ValueIsRequired(nameof(place));
 
-        var place = input.Trim().ToUpper();
+        place = place.Trim().ToUpper();
 
         if (_all.Any(p => p.Value == place) == false)
-        {
-            throw new ArgumentException("Указанный вариант уже существует в виде свойства.");
-        }
+            return Errors.General.ValueIsInvalid(nameof(place));
 
-        return new(place);
+        return new Place(place);
     }
 }

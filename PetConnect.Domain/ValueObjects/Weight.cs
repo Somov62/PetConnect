@@ -1,4 +1,7 @@
-﻿namespace PetConnect.Domain.ValueObjects;
+﻿using CSharpFunctionalExtensions;
+using PetConnect.Domain.Common;
+
+namespace PetConnect.Domain.ValueObjects;
 
 /// <summary>
 /// Value-object веса для указания веса животного.
@@ -13,10 +16,18 @@ public record Weight
     /// <summary>
     /// Указать вес животного в килограммах.
     /// </summary>
-    /// <param name="kilograms"></param>
-    public Weight(float kilograms)
+    private Weight(float kilograms) => Kilograms = kilograms;
+
+    /// <summary>
+    /// Создает value-object места.
+    /// </summary>
+    /// <param name="weight">  Вес животного в килограммах. </param>
+    public static Result<Weight, Error> Create(float weight)
     {
-        Kilograms = kilograms;
+        if (weight <= 0)
+            return Errors.General.ValueIsInvalid(nameof(weight), "Попытка передать отрицательный вес");
+
+        return new Weight(weight);
     }
 }
 

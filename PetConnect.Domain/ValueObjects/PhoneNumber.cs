@@ -1,13 +1,14 @@
-﻿using System.Text.RegularExpressions;
+﻿using CSharpFunctionalExtensions;
+using PetConnect.Domain.Common;
+using System.Text.RegularExpressions;
 
 namespace PetConnect.Domain.ValueObjects;
 
 /// <summary>
 /// Value-object для номеров телефонов.
 /// </summary>
-public record PhoneNumber
+public partial record PhoneNumber
 {
-    private const string _phoneRegex = @"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7, 10}";
     private PhoneNumber(string number) => Number = number;
 
     /// <summary>
@@ -18,14 +19,17 @@ public record PhoneNumber
     /// <summary>
     /// Создает value-object номера телефона.
     /// </summary>
-    public static PhoneNumber Create(string input)
+    public static Result<PhoneNumber, Error> Create(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
-            throw new ArgumentNullException(nameof(input));
+            return Errors.General.ValueIsRequired("номер телефона");
 
-        if (Regex.IsMatch(input, _phoneRegex))
-            throw new ArgumentException();
+        if (!IsPhoneNumber().IsMatch(input))
+            return Errors.General.ValueIsInvalid("номер телефона", "не соответствует маске российских номеров");
 
         return new PhoneNumber(input);
     }
+
+    [GeneratedRegex(@"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}")]
+    private static partial Regex IsPhoneNumber();
 }
