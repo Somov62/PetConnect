@@ -9,12 +9,20 @@ namespace PetConnect.API.Controllers;
 [Route("[controller]")]
 public class PostController : ControllerBase
 { 
-    private readonly ApplicationContext _dbContext;
+    private readonly PetConnectDbContext _dbContext;
 
-    public PostController(ApplicationContext dbContext)
+    public PostController(PetConnectDbContext dbContext)
     {
         _dbContext = dbContext;
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        return Ok();
+    }
+
+
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreatePostRequest request, CancellationToken cancellationToken)

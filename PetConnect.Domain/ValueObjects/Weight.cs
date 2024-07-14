@@ -1,7 +1,12 @@
-﻿namespace PetConnect.Domain;
+﻿namespace PetConnect.Domain.ValueObjects;
 
-public class Weight
+public record Weight
 {
+    public Weight()
+    {
+        
+    }
+
     /// <summary>
     /// Вес в граммах.
     /// </summary>

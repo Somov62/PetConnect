@@ -1,4 +1,4 @@
-﻿using PetConnect.Domain;
+﻿using PetConnect.Domain.ValueObjects;
 
 namespace PetConnect.API.Contracts;
 
