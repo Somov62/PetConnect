@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetConnect.API.Contracts;
-using PetConnect.Domain;
 using PetConnect.Infrastructure;
 
 namespace PetConnect.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PostController : ControllerBase
+public class PetController : ControllerBase
 { 
     private readonly PetConnectDbContext _dbContext;
 
-    public PostController(PetConnectDbContext dbContext)
+    public PetController(PetConnectDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -25,7 +24,7 @@ public class PostController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreatePostRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody] CreatePetRequest request, CancellationToken cancellationToken)
     {
         return Ok();
     }

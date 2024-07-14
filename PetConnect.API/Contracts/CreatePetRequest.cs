@@ -13,7 +13,7 @@ namespace PetConnect.API.Contracts;
 /// <param name="Height"> Высота. </param>
 /// <param name="Vaccine"> Наличие вакцин </param>
 /// <param name="BirthDate"> День рождения. </param>
-public record CreatePostRequest(
+public record CreatePetRequest(
         string Name,
         string Breed,
         Weight Weight,
