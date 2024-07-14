@@ -11,7 +11,7 @@ public record Place
     public static readonly Place InHospital = new(nameof(InHospital).ToUpper());
 
     /// <summary>
-    /// На передержке
+    /// На передержке.
     /// </summary>
     public static readonly Place InTemporaryHome = new(nameof(InTemporaryHome).ToUpper());
 

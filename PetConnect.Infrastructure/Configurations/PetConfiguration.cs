@@ -20,23 +20,22 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(p => p.Health).IsRequired();
         builder.Property(p => p.OnlyOneInFamily).IsRequired();
         builder.Property(p => p.Height).IsRequired(false);
-        builder.Property(p => p.Vaccine).IsRequired();
         builder.Property(p => p.OnTreatment).IsRequired();
         builder.Property(p => p.CreatedDate).IsRequired();
 
         builder.ComplexProperty(p => p.Address, b =>
         {
             b.Property(a => a.City).HasColumnName("city");
-            b.Property(a => a.Street).HasColumnName("street");
-            b.Property(a => a.Building).HasColumnName("building");
-            b.Property(a => a.Postcode).HasColumnName("postcode");
+            b.Property(a => a.Street).HasColumnName("street").IsRequired(false);
+            b.Property(a => a.Building).HasColumnName("building").IsRequired(false);
+            b.Property(a => a.Postcode).HasColumnName("postcode").IsRequired(false);
         });
        
         builder.ComplexProperty(p => p.Place, 
             b => { b.Property(a => a.Value).HasColumnName("place"); });
 
         builder.ComplexProperty(p => p.Weight, 
-            b => { b.Property(a => a.Grams).HasColumnName("weight"); });
+            b => { b.Property(a => a.Kilograms).HasColumnName("weight"); });
 
         builder.ComplexProperty(p => p.ContactPhoneNumber, 
             b => { b.Property(a => a.Number).HasColumnName("contact_phone_number"); });

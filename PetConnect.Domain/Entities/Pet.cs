@@ -12,7 +12,6 @@ public class Pet
     /// </summary>
     private Pet() { }
 
-
     /// <summary>
     /// Основной конструктор.
     /// </summary>
@@ -31,7 +30,6 @@ public class Pet
         bool onlyOneInFamily,
         int? height,
         Weight weight,
-        bool vaccine,
         PhoneNumber contactNumber,
         PhoneNumber volunteerPhoneNumber,
         bool onTreatment,
@@ -53,7 +51,6 @@ public class Pet
         OnlyOneInFamily = onlyOneInFamily;
         Height = height;
         Weight = weight;
-        Vaccine = vaccine;
         ContactPhoneNumber = contactNumber;
         VolunteerPhoneNumber = volunteerPhoneNumber;
         OnTreatment = onTreatment;
@@ -67,6 +64,8 @@ public class Pet
     /// </summary>
     public Guid Id { get; private set; }
 
+
+
     /// <summary>
     /// Имя.
     /// </summary>
@@ -78,11 +77,6 @@ public class Pet
     public string Description { get; private set; } = string.Empty;
 
     /// <summary>
-    /// День рождения.
-    /// </summary>
-    public DateTime BirthDate { get; private set; }
-
-    /// <summary>
     /// Порода.
     /// </summary>
     public string Breed { get; private set; } = string.Empty;
@@ -91,21 +85,6 @@ public class Pet
     /// Окрас.
     /// </summary>
     public string Color { get; private set; } = string.Empty;
-
-    /// <summary>
-    /// Место нахождения.
-    /// </summary>
-    public Place Place { get; private set; } 
-
-    /// <summary>
-    /// Адрес.
-    /// </summary>
-    public Address Address { get; private set; }
-
-    /// <summary>
-    /// Кастрация/стерилизация.
-    /// </summary>
-    public bool Castration { get; private set; }
 
     /// <summary>
     /// Отношение к людям.
@@ -122,25 +101,46 @@ public class Pet
     /// </summary>
     public string Health { get; private set; }
 
+
+
+    /// <summary>
+    /// Кастрация/стерилизация.
+    /// </summary>
+    public bool Castration { get; private set; }
+
     /// <summary>
     /// Отметка о том, что данное животное должно быть одним в семье.
     /// </summary>
     public bool OnlyOneInFamily { get; private set; }
 
     /// <summary>
+    /// Отметка о том, что животное на данный момент находится на лечении.
+    /// </summary>
+    public bool OnTreatment { get; private set; }
+
+
+
+    /// <summary>
     /// Рост в сантиметрах.
     /// </summary>
     public int? Height { get; private set; }
+
+    
+
+    /// <summary>
+    /// Место нахождения.
+    /// </summary>
+    public Place Place { get; private set; }
+
+    /// <summary>
+    /// Адрес.
+    /// </summary>
+    public Address Address { get; private set; }
 
     /// <summary>
     /// Вес.
     /// </summary>
     public Weight Weight { get; private set; } = default!;
-
-    /// <summary>
-    /// Отметка о том, что животное имеет все необходимые вакцины.
-    /// </summary>
-    public bool Vaccine { get; private set; }
 
     /// <summary>
     /// Номер телефона для связи.
@@ -152,33 +152,35 @@ public class Pet
     /// </summary>
     public PhoneNumber VolunteerPhoneNumber { get; private set; }
 
-    /// <summary>
-    /// Отметка о том, что животное на данный момент находится на лечении.
-    /// </summary>
-    public bool OnTreatment { get; private set; }
 
+
+    /// <summary>
+    /// День рождения.
+    /// </summary>
+    public DateTimeOffset BirthDate { get; private set; }
+    
     /// <summary>
     /// Дата создания сущности.
     /// </summary>
-    public DateTime CreatedDate { get; private set; }
+    public DateTimeOffset CreatedDate { get; private set; }
+
 
 
     /// <summary>
     /// Список имеющихся вакцин для внешнего использования.
     /// </summary>
     public IReadOnlyList<Vaccination> Vaccinations => _vaccinations;
-
     /// <summary>
     /// Список имеющихся вакцин для внутреннего использования.
     /// </summary>
     private readonly List<Vaccination> _vaccinations = [];
 
 
+
     /// <summary>
     /// Список фотографий для внешнего использования.
     /// </summary>
     public IReadOnlyList<Photo> Photos => _photos;
-
     /// <summary>
     /// Список фотографий для внутреннего использования.
     /// </summary>

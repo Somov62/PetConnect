@@ -5,11 +5,6 @@
 /// </summary>
 public record Address
 {
-    public Address()
-    {
-        
-    }
-
     public Address(string city, string street, string building, string postcode)
     {
         City = city;

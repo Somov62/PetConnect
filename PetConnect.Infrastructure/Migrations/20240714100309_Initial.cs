@@ -18,7 +18,7 @@ namespace PetConnect.Infrastructure.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     nickname = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
-                    birth_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    birth_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     breed = table.Column<string>(type: "text", nullable: false),
                     color = table.Column<string>(type: "text", nullable: false),
                     castration = table.Column<bool>(type: "boolean", nullable: false),
@@ -27,17 +27,16 @@ namespace PetConnect.Infrastructure.Migrations
                     health = table.Column<string>(type: "text", nullable: false),
                     only_one_in_family = table.Column<bool>(type: "boolean", nullable: false),
                     height = table.Column<int>(type: "integer", nullable: true),
-                    vaccine = table.Column<bool>(type: "boolean", nullable: false),
                     on_treatment = table.Column<bool>(type: "boolean", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    building = table.Column<string>(type: "text", nullable: false),
+                    created_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    building = table.Column<string>(type: "text", nullable: true),
                     city = table.Column<string>(type: "text", nullable: false),
-                    postcode = table.Column<string>(type: "text", nullable: false),
-                    street = table.Column<string>(type: "text", nullable: false),
+                    postcode = table.Column<string>(type: "text", nullable: true),
+                    street = table.Column<string>(type: "text", nullable: true),
                     contact_phone_number = table.Column<string>(type: "text", nullable: false),
                     place = table.Column<string>(type: "text", nullable: false),
                     volunteer_phone_number = table.Column<string>(type: "text", nullable: false),
-                    weight = table.Column<int>(type: "integer", nullable: false)
+                    weight = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
