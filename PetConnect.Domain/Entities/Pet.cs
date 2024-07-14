@@ -1,4 +1,6 @@
-﻿using PetConnect.Domain.ValueObjects;
+﻿using CSharpFunctionalExtensions;
+using PetConnect.Domain.Common;
+using PetConnect.Domain.ValueObjects;
 
 namespace PetConnect.Domain.Entities;
 
@@ -15,10 +17,10 @@ public class Pet
     /// <summary>
     /// Основной конструктор.
     /// </summary>
-    public Pet(
+    private Pet(
         string nickname,
         string description,
-        DateTime birthDate,
+        DateTimeOffset birthDate,
         string breed,
         string color,
         Place place,
@@ -33,9 +35,7 @@ public class Pet
         PhoneNumber contactNumber,
         PhoneNumber volunteerPhoneNumber,
         bool onTreatment,
-        DateTime createdDate,
-        List<Vaccination> vaccinations,
-        List<Photo> photos)
+        DateTimeOffset createdDate)
     {
         Nickname = nickname;
         Description = description;
@@ -55,8 +55,6 @@ public class Pet
         VolunteerPhoneNumber = volunteerPhoneNumber;
         OnTreatment = onTreatment;
         CreatedDate = createdDate;
-        _vaccinations = vaccinations;
-        _photos = photos;
     }
 
     /// <summary>
@@ -109,7 +107,7 @@ public class Pet
     public bool Castration { get; private set; }
 
     /// <summary>
-    /// Отметка о том, что данное животное должно быть одним в семье.
+    /// Отметка о том, что данное животное должно быть единственным в семье.
     /// </summary>
     public bool OnlyOneInFamily { get; private set; }
 
@@ -125,7 +123,7 @@ public class Pet
     /// </summary>
     public int? Height { get; private set; }
 
-    
+
 
     /// <summary>
     /// Место нахождения.
@@ -158,7 +156,7 @@ public class Pet
     /// День рождения.
     /// </summary>
     public DateTimeOffset BirthDate { get; private set; }
-    
+
     /// <summary>
     /// Дата создания сущности.
     /// </summary>
@@ -185,4 +183,73 @@ public class Pet
     /// Список фотографий для внутреннего использования.
     /// </summary>
     private readonly List<Photo> _photos = [];
+
+
+    /// <summary>
+    /// Максимальная длина поля <see cref="Nickname"/>
+    /// </summary>
+    private const int MAX_NICKNAME_LENGTH = 100;
+
+
+    /// <summary>
+    /// Создание животного с валидацией.
+    /// </summary>
+    public static Result<Pet, Error> Create(
+        string nickname,
+        string description,
+        DateTimeOffset birthDate,
+        string breed,
+        string color,
+        Place place,
+        Address address,
+        bool castration,
+        string peopleAttitude,
+        string animalAttitude,
+        string health,
+        bool onlyOneInFamily,
+        int? height,
+        Weight weight,
+        PhoneNumber contactNumber,
+        PhoneNumber volunteerPhoneNumber,
+        bool onTreatment
+        )
+    {
+        if (string.IsNullOrWhiteSpace(nickname) || nickname.Length > MAX_NICKNAME_LENGTH)
+            return Errors.General.InvalidLength(nameof(nickname));
+
+        if (string.IsNullOrWhiteSpace(breed))
+            return Errors.General.ValueIsRequired(nameof(breed));
+
+        if (string.IsNullOrWhiteSpace(color))
+            return Errors.General.ValueIsRequired(nameof(color));
+
+        if (string.IsNullOrWhiteSpace(peopleAttitude))
+            return Errors.General.ValueIsRequired(nameof(peopleAttitude));
+
+        if (string.IsNullOrWhiteSpace(animalAttitude))
+            return Errors.General.ValueIsRequired(nameof(animalAttitude));
+
+        if (string.IsNullOrWhiteSpace(health))
+            return Errors.General.ValueIsRequired(nameof(health));
+
+        return new Pet(
+            nickname,
+            description,
+            birthDate,
+            breed,
+            color,
+            place,
+            address,
+            castration,
+            peopleAttitude,
+            animalAttitude,
+            health,
+            onlyOneInFamily,
+            height,
+            weight,
+            contactNumber,
+            volunteerPhoneNumber,
+            onTreatment,
+            DateTime.Now);
+    }
 }
