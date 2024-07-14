@@ -4,6 +4,9 @@ using PetConnect.Domain.Entities;
 
 namespace PetConnect.Infrastructure.Configurations;
 
+/// <summary>
+/// Конфигурация таблицы с животными.
+/// </summary>
 public class PetConfiguration : IEntityTypeConfiguration<Pet>
 {
     public void Configure(EntityTypeBuilder<Pet> builder)
