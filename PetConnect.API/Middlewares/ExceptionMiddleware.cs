@@ -1,4 +1,5 @@
-﻿using PetConnect.Domain.Common;
+﻿using PetConnect.API.Helpers;
+using PetConnect.Domain.Common;
 using System.Net;
 
 namespace PetConnect.API.Middlewares;
@@ -35,7 +36,7 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
             context.Response.ContentType = "application/json";
 
             var error = new Error("server.internal", ex.Message);
-            await context.Response.WriteAsJsonAsync(error);
+            await context.Response.WriteAsJsonAsync(Envelope.Error(error));
         }
     }
 }
