@@ -13,4 +13,9 @@ public interface IPetsRepository
     /// Добавляет информацию о животном в систему.
     /// </summary>
     Task<Result<Guid, Error>> Add(Pet pet, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Возвращает сущности постранично.
+    /// </summary>
+    Task<IReadOnlyList<Pet>> GetByPage(int page, int size, CancellationToken cancellationToken);
 }

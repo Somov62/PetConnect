@@ -1,4 +1,4 @@
-﻿using Contracts.Requests;
+﻿using Contracts.Pets.Requests;
 using FluentValidation;
 using PetConnect.Domain.Common;
 using PetConnect.Domain.Entities;

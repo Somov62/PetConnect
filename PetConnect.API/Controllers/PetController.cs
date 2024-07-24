@@ -1,6 +1,6 @@
-﻿using Contracts.Requests;
+﻿using Contracts.Pets.Requests;
 using Microsoft.AspNetCore.Mvc;
-using PetConnect.Application;
+using PetConnect.Application.Services;
 
 namespace PetConnect.API.Controllers;
 
@@ -8,7 +8,7 @@ namespace PetConnect.API.Controllers;
 /// Контроллер для взаимодействия с сущностями животных.
 /// </summary>
 [Route("[controller]")]
-public class PetController(PetsService petService) : ApplicationController
+public class PetController(PetsService petsService) : ApplicationController
 {
     /// <summary>
     /// Добавляет информацию о животном в систему.
@@ -16,11 +16,25 @@ public class PetController(PetsService petService) : ApplicationController
     [HttpPost]
     public async Task<ActionResult<Guid>> Create([FromBody] CreatePetRequest request, CancellationToken cancellationToken)
     {
-        var idResult = await petService.CreatePet(request, cancellationToken);
+        var idResult = await petsService.CreatePet(request, cancellationToken);
 
         if (idResult.IsFailure)
             return BadRequest(idResult.Error);
 
         return Ok(idResult.Value);
-    } 
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> GetByPage([FromQuery] GetPetsByPageRequest request, CancellationToken cancellationToken)
+    {
+        if (request == null)
+            return BadRequest("Не указаны параметры пагинации");
+
+        var response = await petsService.GetByPage (request, cancellationToken);
+
+        return Ok(response);
+    }
 }

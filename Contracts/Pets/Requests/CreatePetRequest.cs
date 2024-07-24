@@ -1,4 +1,4 @@
-﻿namespace Contracts.Requests;
+﻿namespace Contracts.Pets.Requests;
 
 /// <summary>
 /// ДТО для запроса на создание животного.
@@ -32,9 +32,9 @@ public record CreatePetRequest(
         string AnimalAttitude,
         string Health,
         string Place,
-        string City, 
-        string Street, 
-        string Building, 
+        string City,
+        string Street,
+        string Building,
         string Postcode,
         string ContactNumber,
         string VolunteerPhoneNumber,
@@ -45,7 +45,3 @@ public record CreatePetRequest(
         float Weight,
         DateTimeOffset BirthDate
     );
-
-
-
-

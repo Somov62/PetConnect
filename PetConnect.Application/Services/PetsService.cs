@@ -1,11 +1,14 @@
-﻿using Contracts.Requests;
+﻿using Contracts.Pets.Dtos;
+using Contracts.Pets.Requests;
+using Contracts.Pets.Responses;
 using CSharpFunctionalExtensions;
 using PetConnect.Application.Abstractions;
+using PetConnect.Application.Extensions;
 using PetConnect.Domain.Common;
 using PetConnect.Domain.Entities;
 using PetConnect.Domain.ValueObjects;
 
-namespace PetConnect.Application;
+namespace PetConnect.Application.Services;
 
 /// <summary>
 /// Сервис для работы с сущностью животного <see cref="Pet"/>
@@ -48,10 +51,22 @@ public class PetsService(IPetsRepository petsRepository)
                 request.OnTreatment
             );
 
-        if (pet.IsFailure) 
+        if (pet.IsFailure)
             return pet.Error;
 
         var idResult = await petsRepository.Add(pet.Value, cancellationToken);
         return idResult.IsSuccess ? idResult.Value : idResult.Error;
+    }
+
+    /// <summary>
+    /// Возвращает всех животных.
+    /// </summary>
+    public async Task<GetPetsByPageResponse> GetByPage(GetPetsByPageRequest request, CancellationToken cancellationToken)
+    {
+        var pets = await petsRepository.GetByPage(request.Page, request.Size, cancellationToken);
+
+        var petDtos = pets.Select(pet => pet.ToDto());
+
+        return new(petDtos);
     }
 }

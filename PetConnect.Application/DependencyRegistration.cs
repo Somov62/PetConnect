@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using PetConnect.Application.Services;
 
 namespace PetConnect.Application;
 
