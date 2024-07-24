@@ -18,25 +18,15 @@ public class PetsService(IPetsRepository petsRepository)
     public async Task<Result<Guid, Error>> CreatePet(CreatePetRequest request, CancellationToken cancellationToken)
     {
         // Инстанцируем value-objects.
-        var address = Address.Create(request.City, request.Street, request.Building, request.Postcode);
-        if (address.IsFailure)
-            return address.Error;
+        var address = Address.Create(request.City, request.Street, request.Building, request.Postcode).Value;
 
-        var place = Place.Create(request.Place);
-        if (place.IsFailure)
-            return place.Error;
+        var place = Place.Create(request.Place).Value;
 
-        var weight = Weight.Create(request.Weight);
-        if (weight.IsFailure)
-            return weight.Error;
+        var weight = Weight.Create(request.Weight).Value;
 
-        var contactPhoneNumber = PhoneNumber.Create(request.ContactNumber);
-        if (contactPhoneNumber.IsFailure)
-            return contactPhoneNumber.Error;
+        var contactPhoneNumber = PhoneNumber.Create(request.ContactNumber).Value;
 
-        var volunteerPhoneNumber = PhoneNumber.Create(request.VolunteerPhoneNumber);
-        if (volunteerPhoneNumber.IsFailure)
-            return volunteerPhoneNumber.Error;
+        var volunteerPhoneNumber = PhoneNumber.Create(request.VolunteerPhoneNumber).Value;
 
         var pet = Pet.Create(
                 request.Nickname,
@@ -44,17 +34,17 @@ public class PetsService(IPetsRepository petsRepository)
                 request.BirthDate,
                 request.Breed,
                 request.Color,
-                place.Value,
-                address.Value,
+                place,
+                address,
                 request.Castration,
                 request.PeopleAttitude,
                 request.AnimalAttitude,
                 request.Health,
                 request.OnlyOneInFamily,
                 request.Height,
-                weight.Value,
-                contactPhoneNumber.Value,
-                volunteerPhoneNumber.Value,
+                weight,
+                contactPhoneNumber,
+                volunteerPhoneNumber,
                 request.OnTreatment
             );
 

@@ -87,17 +87,17 @@ public class Pet
     /// <summary>
     /// Отношение к людям.
     /// </summary>
-    public string PeopleAttitude { get; private set; }
+    public string PeopleAttitude { get; private set; } = string.Empty;
 
     /// <summary>
     /// Отношение к животным.
     /// </summary>
-    public string AnimalAttitude { get; private set; }
+    public string AnimalAttitude { get; private set; } = string.Empty;
 
     /// <summary>
     /// Подробное описание состояния здоровья.
     /// </summary>
-    public string Health { get; private set; }
+    public string Health { get; private set; } = string.Empty;
 
 
 
@@ -128,12 +128,12 @@ public class Pet
     /// <summary>
     /// Место нахождения.
     /// </summary>
-    public Place Place { get; private set; }
+    public Place Place { get; private set; } = default!;
 
     /// <summary>
     /// Адрес.
     /// </summary>
-    public Address Address { get; private set; }
+    public Address Address { get; private set; } = default!;
 
     /// <summary>
     /// Вес.
@@ -143,12 +143,12 @@ public class Pet
     /// <summary>
     /// Номер телефона для связи.
     /// </summary>
-    public PhoneNumber ContactPhoneNumber { get; private set; }
+    public PhoneNumber ContactPhoneNumber { get; private set; } = default!;
 
     /// <summary>
     /// Номер телефона ответственного волонтера.
     /// </summary>
-    public PhoneNumber VolunteerPhoneNumber { get; private set; }
+    public PhoneNumber VolunteerPhoneNumber { get; private set; } = default!;
 
 
 
@@ -184,12 +184,11 @@ public class Pet
     /// </summary>
     private readonly List<Photo> _photos = [];
 
-
-    /// <summary>
-    /// Максимальная длина поля <see cref="Nickname"/>
-    /// </summary>
-    private const int MAX_NICKNAME_LENGTH = 100;
-
+    #region restrictions ограничения
+    public const int MAX_NICKNAME_LENGTH = 100;
+    public const int MAX_BREED_LENGTH = 100;
+    public const int MAX_COLOR_LENGTH = 100;
+    #endregion
 
     /// <summary>
     /// Создание животного с валидацией.
@@ -214,14 +213,21 @@ public class Pet
         bool onTreatment
         )
     {
-        if (string.IsNullOrWhiteSpace(nickname) || nickname.Length > MAX_NICKNAME_LENGTH)
+        nickname = nickname?.Trim()!;
+        if (string.IsNullOrWhiteSpace(nickname))
+            return Errors.General.ValueIsRequired(nameof(nickname));
+        if (nickname.Length > MAX_NICKNAME_LENGTH)
             return Errors.General.InvalidLength(nameof(nickname));
 
         if (string.IsNullOrWhiteSpace(breed))
             return Errors.General.ValueIsRequired(nameof(breed));
+        if (nickname.Length > MAX_BREED_LENGTH)
+            return Errors.General.InvalidLength(nameof(breed));
 
         if (string.IsNullOrWhiteSpace(color))
             return Errors.General.ValueIsRequired(nameof(color));
+        if (nickname.Length > MAX_COLOR_LENGTH)
+            return Errors.General.InvalidLength(nameof(color));
 
         if (string.IsNullOrWhiteSpace(peopleAttitude))
             return Errors.General.ValueIsRequired(nameof(peopleAttitude));

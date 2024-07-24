@@ -7,9 +7,8 @@ namespace PetConnect.API.Controllers;
 /// <summary>
 /// Контроллер для взаимодействия с сущностями животных.
 /// </summary>
-[ApiController]
 [Route("[controller]")]
-public class PetController(PetsService petService) : ControllerBase
+public class PetController(PetsService petService) : ApplicationController
 {
     /// <summary>
     /// Добавляет информацию о животном в систему.
@@ -23,5 +22,5 @@ public class PetController(PetsService petService) : ControllerBase
             return BadRequest(idResult.Error);
 
         return Ok(idResult.Value);
-    }
+    } 
 }

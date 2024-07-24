@@ -28,7 +28,7 @@ public class Vaccination
     /// <summary>
     /// Название.
     /// </summary>
-    public string Name { get; private set; }
+    public string Name { get; private set; } = null!;
     
     /// <summary>
     /// Дата вакцинации.

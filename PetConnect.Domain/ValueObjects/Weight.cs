@@ -11,7 +11,7 @@ public record Weight
     /// <summary>
     /// Вес в граммах.
     /// </summary>
-    public float Kilograms { get; set; }
+    public float Kilograms { get; }
 
     /// <summary>
     /// Указать вес животного в килограммах.
