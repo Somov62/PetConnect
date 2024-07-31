@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetConnect.Domain.Entities;
 
-namespace PetConnect.Infrastructure.Configurations;
+namespace PetConnect.Infrastructure.Configurations.Write;
 
 /// <summary>
 /// Конфигурация таблицы с животными.
@@ -11,6 +11,8 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 {
     public void Configure(EntityTypeBuilder<Pet> builder)
     {
+        builder.ToTable("pets");
+
         builder.HasKey(p => p.Id);
         builder.Property(p => p.Nickname).IsRequired();
         builder.Property(p => p.Description).IsRequired();
@@ -33,20 +35,20 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             b.Property(a => a.Building).HasColumnName("building").IsRequired(false);
             b.Property(a => a.Postcode).HasColumnName("postcode").IsRequired(false);
         });
-       
-        builder.ComplexProperty(p => p.Place, 
+
+        builder.ComplexProperty(p => p.Place,
             b => { b.Property(a => a.Value).HasColumnName("place"); });
 
-        builder.ComplexProperty(p => p.Weight, 
+        builder.ComplexProperty(p => p.Weight,
             b => { b.Property(a => a.Kilograms).HasColumnName("weight"); });
 
-        builder.ComplexProperty(p => p.ContactPhoneNumber, 
+        builder.ComplexProperty(p => p.ContactPhoneNumber,
             b => { b.Property(a => a.Number).HasColumnName("contact_phone_number"); });
 
-        builder.ComplexProperty(p => p.VolunteerPhoneNumber, 
+        builder.ComplexProperty(p => p.VolunteerPhoneNumber,
             b => { b.Property(a => a.Number).HasColumnName("volunteer_phone_number"); });
 
-        builder.HasMany(p => p.Photos).WithOne();  
-        builder.HasMany(p => p.Vaccinations).WithOne();  
+        builder.HasMany(p => p.Photos).WithOne();
+        builder.HasMany(p => p.Vaccinations).WithOne();
     }
 }

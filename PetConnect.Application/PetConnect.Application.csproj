@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\PetConnect.Domain\PetConnect.Domain.csproj" />
   </ItemGroup>
 

@@ -1,22 +1,19 @@
 using PetConnect.API.AutoFluentValidation;
 using PetConnect.API.Middlewares;
 using PetConnect.Application;
-using PetConnect.Application.Abstractions;
 using PetConnect.Infrastructure;
-using PetConnect.Infrastructure.Repositories;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
+builder.Services
+    .AddInfrastructure()
+    .AddApplication();
 
-builder.Services.AddApplication();
-builder.Services.AddScoped<PetConnectDbContext>();
-
-builder.Services.AddScoped<IPetsRepository, PetsRepository>();
-
-builder.Services.AddHttpLogging(options => { });
+builder.Services
+    .AddSwaggerGen()
+    .AddHttpLogging(options => { })
+    .AddControllers();
 
 // Авто валидация для ДТО, попадающих в контроллер в теле запроса.
 builder.Services.AddFluentValidationAutoValidation(configuration =>

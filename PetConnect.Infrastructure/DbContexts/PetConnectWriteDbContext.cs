@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 using PetConnect.Domain.Entities;
 using PetConnect.Infrastructure.Conventions;
 
-namespace PetConnect.Infrastructure;
+namespace PetConnect.Infrastructure.DbContexts;
 
 /// <summary>
 /// Контекст базы данных для проекта PetConnect.
 /// </summary>
-public class PetConnectDbContext(IConfiguration configuration) : DbContext
+public class PetConnectWriteDbContext(IConfiguration configuration) : DbContext
 {
     /// <summary>
     /// Конфигурация системы развёртывания.
@@ -22,14 +22,18 @@ public class PetConnectDbContext(IConfiguration configuration) : DbContext
     /// </summary>
     public DbSet<Pet> Pets => Set<Pet>();
 
-    
+    /// <summary>
+    /// Таблица с волонтерами.
+    /// </summary>
+    public DbSet<Volunteer> Volunteers => Set<Volunteer>();
+
 
     /// <summary>
     /// Конфигурация работы контекста данных.
     /// </summary>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(_configuration.GetConnectionString(nameof(PetConnectDbContext)));
+        optionsBuilder.UseNpgsql(_configuration.GetConnectionString("PetConnectDbContext"));
         optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
     }
@@ -48,6 +52,7 @@ public class PetConnectDbContext(IConfiguration configuration) : DbContext
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PetConnectDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PetConnectWriteDbContext).Assembly,
+            configurationType => configurationType.FullName?.Contains("Configurations.Write") ?? false);
     }
 }

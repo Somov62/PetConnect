@@ -1,25 +1,30 @@
-﻿using Contracts.Pets.Dtos;
-using Contracts.Pets.Requests;
-using Contracts.Pets.Responses;
-using CSharpFunctionalExtensions;
-using PetConnect.Application.Abstractions;
-using PetConnect.Application.Extensions;
+﻿using CSharpFunctionalExtensions;
+using PetConnect.Application.Features.Pets;
 using PetConnect.Domain.Common;
 using PetConnect.Domain.Entities;
 using PetConnect.Domain.ValueObjects;
 
-namespace PetConnect.Application.Services;
+namespace PetConnect.Application.Features.Volunteers.CreatePet;
 
 /// <summary>
 /// Сервис для работы с сущностью животного <see cref="Pet"/>
 /// </summary>
-public class PetsService(IPetsRepository petsRepository)
+public class CreatePetService(IVolunteerRepository repository)
 {
     /// <summary>
     /// Добавляет информацию о животном в систему.
     /// </summary>
-    public async Task<Result<Guid, Error>> CreatePet(CreatePetRequest request, CancellationToken cancellationToken)
+    public async Task<Result<Guid, Error>> Execute(CreatePetRequest request, CancellationToken cancellationToken)
     {
+        var volunteerResult = await repository.GetById(request.VolunteerId, cancellationToken);
+
+        if (volunteerResult.IsFailure)
+            return volunteerResult.Error;
+
+        var volunteer = volunteerResult.Value;
+
+
+
         // Инстанцируем value-objects.
         var address = Address.Create(request.City, request.Street, request.Building, request.Postcode).Value;
 
@@ -54,19 +59,7 @@ public class PetsService(IPetsRepository petsRepository)
         if (pet.IsFailure)
             return pet.Error;
 
-        var idResult = await petsRepository.Add(pet.Value, cancellationToken);
-        return idResult.IsSuccess ? idResult.Value : idResult.Error;
-    }
-
-    /// <summary>
-    /// Возвращает всех животных.
-    /// </summary>
-    public async Task<GetPetsByPageResponse> GetByPage(GetPetsByPageRequest request, CancellationToken cancellationToken)
-    {
-        var pets = await petsRepository.GetByPage(request.Page, request.Size, cancellationToken);
-
-        var petDtos = pets.Select(pet => pet.ToDto());
-
-        return new(petDtos);
+        volunteer.PublishPet(pet.Value);
+        return await repository.Save(volunteer, cancellationToken);
     }
 }

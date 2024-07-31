@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using PetConnect.Infrastructure;
+using PetConnect.Infrastructure.DbContexts;
 
 #nullable disable
 
 namespace PetConnect.Infrastructure.Migrations
 {
-    [DbContext(typeof(PetConnectDbContext))]
+    [DbContext(typeof(PetConnectWriteDbContext))]
     partial class PetConnectDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -89,6 +89,10 @@ namespace PetConnect.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("people_attitude");
 
+                    b.Property<Guid?>("VolunteerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("volunteer_id");
+
                     b.ComplexProperty<Dictionary<string, object>>("Address", "PetConnect.Domain.Entities.Pet.Address#Address", b1 =>
                         {
                             b1.IsRequired();
@@ -153,6 +157,9 @@ namespace PetConnect.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_pets");
 
+                    b.HasIndex("VolunteerId")
+                        .HasDatabaseName("ix_pets_volunteer_id");
+
                     b.ToTable("pets", (string)null);
                 });
 
@@ -176,13 +183,20 @@ namespace PetConnect.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("pet_id");
 
+                    b.Property<Guid?>("VolunteerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("volunteer_id");
+
                     b.HasKey("Id")
-                        .HasName("pk_photo");
+                        .HasName("pk_photos");
 
                     b.HasIndex("PetId")
-                        .HasDatabaseName("ix_photo_pet_id");
+                        .HasDatabaseName("ix_photos_pet_id");
 
-                    b.ToTable("photo", (string)null);
+                    b.HasIndex("VolunteerId")
+                        .HasDatabaseName("ix_photos_volunteer_id");
+
+                    b.ToTable("photos", (string)null);
                 });
 
             modelBuilder.Entity("PetConnect.Domain.Entities.Vaccination", b =>
@@ -206,12 +220,65 @@ namespace PetConnect.Infrastructure.Migrations
                         .HasColumnName("pet_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_vaccination");
+                        .HasName("pk_vaccinations");
 
                     b.HasIndex("PetId")
-                        .HasDatabaseName("ix_vaccination_pet_id");
+                        .HasDatabaseName("ix_vaccinations_pet_id");
 
-                    b.ToTable("vaccination", (string)null);
+                    b.ToTable("vaccinations", (string)null);
+                });
+
+            modelBuilder.Entity("PetConnect.Domain.Entities.Volunteer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("DonationInfo")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("donation_info");
+
+                    b.Property<bool>("FromShelter")
+                        .HasColumnType("boolean")
+                        .HasColumnName("from_shelter");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("SocialMedias")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("social_medias");
+
+                    b.Property<int>("SuccessFoundHomeForPetCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("success_found_home_for_pet_count");
+
+                    b.Property<int>("YearsExperience")
+                        .HasColumnType("integer")
+                        .HasColumnName("years_experience");
+
+                    b.HasKey("Id")
+                        .HasName("pk_volunteers");
+
+                    b.ToTable("volunteers", (string)null);
+                });
+
+            modelBuilder.Entity("PetConnect.Domain.Entities.Pet", b =>
+                {
+                    b.HasOne("PetConnect.Domain.Entities.Volunteer", null)
+                        .WithMany("Pets")
+                        .HasForeignKey("VolunteerId")
+                        .HasConstraintName("fk_pets_volunteers_volunteer_id");
                 });
 
             modelBuilder.Entity("PetConnect.Domain.Entities.Photo", b =>
@@ -219,7 +286,12 @@ namespace PetConnect.Infrastructure.Migrations
                     b.HasOne("PetConnect.Domain.Entities.Pet", null)
                         .WithMany("Photos")
                         .HasForeignKey("PetId")
-                        .HasConstraintName("fk_photo_pets_pet_id");
+                        .HasConstraintName("fk_photos_pets_pet_id");
+
+                    b.HasOne("PetConnect.Domain.Entities.Volunteer", null)
+                        .WithMany("Photos")
+                        .HasForeignKey("VolunteerId")
+                        .HasConstraintName("fk_photos_volunteers_volunteer_id");
                 });
 
             modelBuilder.Entity("PetConnect.Domain.Entities.Vaccination", b =>
@@ -227,7 +299,7 @@ namespace PetConnect.Infrastructure.Migrations
                     b.HasOne("PetConnect.Domain.Entities.Pet", null)
                         .WithMany("Vaccinations")
                         .HasForeignKey("PetId")
-                        .HasConstraintName("fk_vaccination_pets_pet_id");
+                        .HasConstraintName("fk_vaccinations_pets_pet_id");
                 });
 
             modelBuilder.Entity("PetConnect.Domain.Entities.Pet", b =>
@@ -235,6 +307,13 @@ namespace PetConnect.Infrastructure.Migrations
                     b.Navigation("Photos");
 
                     b.Navigation("Vaccinations");
+                });
+
+            modelBuilder.Entity("PetConnect.Domain.Entities.Volunteer", b =>
+                {
+                    b.Navigation("Pets");
+
+                    b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
         }

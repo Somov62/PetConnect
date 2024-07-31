@@ -1,4 +1,6 @@
-﻿namespace PetConnect.Domain.Common;
+﻿using System.Xml.Linq;
+
+namespace PetConnect.Domain.Common;
 
 /// <summary>
 /// Информация об ошибке при работе с доменной моделью.
@@ -51,5 +53,18 @@ public static class Errors
             name = name == null ? "" : $" для поля \"{name}\"";
             return new("record.not.found", $"Неверная длина{name}");
         }
+    }
+
+    /// <summary>
+    /// Ошибки при работе с базой данных.
+    /// </summary>
+    public static class Database
+    {
+        /// <summary>
+        /// Ошибка при сохранении в бд.
+        /// </summary>
+        /// <param name="name"> Название сущности, которую не удалось сохранить. </param>
+        public static Error SaveProblem(string name) =>
+            new("save.problem", $"Ошибка сохранения \"{name}\"");
     }
 }

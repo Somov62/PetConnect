@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using PetConnect.Application.Services;
+using PetConnect.Application.Features.Volunteers.CreatePet;
+using PetConnect.Application.Features.Volunteers.CreateVolunteer;
 
 namespace PetConnect.Application;
 
@@ -12,13 +13,18 @@ public static class DependencyRegistration
     /// <summary>
     /// Регистрация зависимостей слоя Application.
     /// </summary>
-    public static IServiceCollection AddApplication(this IServiceCollection services)
-    {
-        // Сервисы.
-        services.AddScoped<PetsService>();
+    public static IServiceCollection AddApplication(this IServiceCollection services) =>
+        services
+            .AddServices()
+            .AddValidatorsFromAssembly(typeof(DependencyRegistration).Assembly);
 
-        // Fluent validators.
-        services.AddValidatorsFromAssembly(typeof(DependencyRegistration).Assembly);
-        return services;
-    }
+
+    /// <summary>
+    /// Регистрация сервисов.
+    /// </summary>
+    private static IServiceCollection AddServices(this IServiceCollection services) =>
+        services
+            .AddScoped<CreatePetService>()
+            .AddScoped<CreateVolunteerService>()
+            ;
 }

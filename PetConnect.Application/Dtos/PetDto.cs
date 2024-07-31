@@ -1,4 +1,4 @@
-﻿namespace Contracts.Pets.Dtos;
+﻿namespace PetConnect.Application.Dtos;
 
 /// <summary>
 /// 
