@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using PetConnect.API.Helpers;
+using PetConnect.API.Contracts;
 using PetConnect.Domain.Common;
 
 namespace PetConnect.API.Controllers;

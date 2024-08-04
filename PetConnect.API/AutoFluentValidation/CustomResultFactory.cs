@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using PetConnect.API.Helpers;
+using PetConnect.API.Contracts;
 using PetConnect.Domain.Common;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Results;
-using System.Text.Json;
 
 namespace PetConnect.API.AutoFluentValidation;
 
@@ -29,7 +28,7 @@ public class CustomResultFactory : IFluentValidationAutoValidationResultFactory
 
         var errors = validationProblemDetails.Errors
             .SelectMany(pair => pair.Value)
-            .Select(value => JsonSerializer.Deserialize<Error>(value));
+            .Select(Error.Deserialize);
 
         return new BadRequestObjectResult(Envelope.Error(errors!));
     }

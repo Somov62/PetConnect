@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PetConnect.Infrastructure.DbContexts;
@@ -12,9 +13,11 @@ using PetConnect.Infrastructure.DbContexts;
 namespace PetConnect.Infrastructure.Migrations
 {
     [DbContext(typeof(PetConnectWriteDbContext))]
-    partial class PetConnectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240804204910_AddConstraints")]
+    partial class AddConstraints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

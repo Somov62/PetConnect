@@ -5,7 +5,7 @@ using PetConnect.Infrastructure.DbContexts;
 namespace PetConnect.Infrastructure.Queries.Pets;
 
 /// <summary>
-/// 
+/// Запрос на чтение сущностей постранично.
 /// </summary>
 public class GetPetsQuery(PetConnectReadDbContext dbContext)
 {

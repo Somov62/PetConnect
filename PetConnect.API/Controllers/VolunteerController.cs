@@ -4,11 +4,14 @@ using PetConnect.Application.Features.Volunteers.CreateVolunteer;
 
 namespace PetConnect.API.Controllers;
 
+/// <summary>
+/// Контроллер для взаимодействия с сущностями животных.
+/// </summary>
 [Route("[controller]")]
 public partial class VolunteerController : ApplicationController
 {
     /// <summary>
-    /// 
+    /// Добавляет информацию о волонтере в систему.
     /// </summary>
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
@@ -23,6 +26,7 @@ public partial class VolunteerController : ApplicationController
 
         return Ok(idResult.Value);
     }
+
 
     /// <summary>
     /// Добавляет информацию о животном в систему.

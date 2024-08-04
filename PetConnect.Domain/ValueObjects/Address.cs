@@ -37,13 +37,10 @@ public record Address
     public string Postcode { get; }
 
     #region restrictions ограничения
-    private const int MAX_CITY_LENGTH = 100;
-
-    private const int MAX_STREET_LENGTH = 100;
-
-    private const int MAX_BUILDING_LENGTH = 100;
-
-    private const int POSTCODE_LENGTH = 6; 
+    public const int MAX_CITY_LENGTH = 100;
+    public const int MAX_STREET_LENGTH = 100;
+    public const int MAX_BUILDING_LENGTH = 100;
+    public const int POSTCODE_LENGTH = 6; 
     #endregion
 
     /// <summary>
@@ -51,33 +48,19 @@ public record Address
     /// </summary>
     public static Result<Address, Error> Create(string city, string street, string building, string postcode)
     {
-        city = city?.Trim()!;
-        if (string.IsNullOrWhiteSpace(city))
-            return Errors.General.ValueIsRequired(nameof(city));
+        Result<string, Error> e;
 
-        if (city.Length > MAX_CITY_LENGTH)
-            return Errors.General.InvalidLength(nameof(city));
+        if ((e = StringHelper.HasPayload(ref city, maxLength: MAX_CITY_LENGTH))
+            .IsFailure) return e.Error;
 
+        if ((e = StringHelper.HasPayload(ref street, maxLength: MAX_STREET_LENGTH))
+            .IsFailure) return e.Error;
 
-        street = street?.Trim()!;
-        if (string.IsNullOrWhiteSpace(street))
-            return Errors.General.ValueIsRequired(nameof(street));
+        if ((e = StringHelper.HasPayload(ref building, maxLength: MAX_BUILDING_LENGTH))
+            .IsFailure) return e.Error;
 
-        if (street.Length > MAX_STREET_LENGTH)
-            return Errors.General.InvalidLength(nameof(street));
-
-
-        building = building?.Trim()!;
-        if (string.IsNullOrWhiteSpace(building))
-            return Errors.General.ValueIsRequired(nameof(building));
-
-        if (building.Length > MAX_BUILDING_LENGTH)
-            return Errors.General.InvalidLength(nameof(building));
-
-
-        postcode = postcode?.Trim()!;
-        if (string.IsNullOrWhiteSpace(postcode))
-            return Errors.General.ValueIsRequired(nameof(postcode));
+        if ((e = StringHelper.HasPayload(ref postcode))
+            .IsFailure) return e.Error;
 
         if (postcode.Length != POSTCODE_LENGTH)
             return Errors.General.InvalidLength(nameof(postcode));

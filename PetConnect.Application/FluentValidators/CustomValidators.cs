@@ -1,14 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using PetConnect.Domain.Common;
-using System.Text.Json;
 
 namespace PetConnect.Application.FluentValidators;
 
 /// <summary>
 /// Класс-расширение с кастомными валидаторами для библиотеки FluentValidations.
 /// </summary>
-public static class MyCustomValidators
+public static class CustomValidators
 {
     /// <summary>
     /// Универсальный метод для валидации value-object, у которого есть фабричный метод создания.
@@ -25,6 +24,6 @@ public static class MyCustomValidators
                 if (result.IsSuccess)
                     return;
 
-                context.AddFailure(JsonSerializer.Serialize(result.Error));
+                context.AddFailure(result.Error.Serialize());
             });
 }

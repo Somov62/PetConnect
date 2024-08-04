@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using PetConnect.Domain.Common;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace PetConnect.Domain.ValueObjects;
@@ -19,13 +20,13 @@ public partial record PhoneNumber
     /// <summary>
     /// Создает value-object номера телефона.
     /// </summary>
-    public static Result<PhoneNumber, Error> Create(string input)
+    public static Result<PhoneNumber, Error> Create(string input, [CallerArgumentExpression(nameof(input))] string fieldName = "")
     {
         if (string.IsNullOrWhiteSpace(input))
-            return Errors.General.ValueIsRequired("номер телефона");
+            return Errors.General.ValueIsRequired(fieldName);
 
         if (!IsPhoneNumber().IsMatch(input))
-            return Errors.General.ValueIsInvalid("номер телефона", "не соответствует маске российских номеров");
+            return Errors.General.ValueIsInvalid(fieldName, "не соответствует маске российских номеров");
 
         return new PhoneNumber(input);
     }

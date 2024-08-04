@@ -213,30 +213,31 @@ public class Pet
         bool onTreatment
         )
     {
-        nickname = nickname?.Trim()!;
-        if (string.IsNullOrWhiteSpace(nickname))
-            return Errors.General.ValueIsRequired(nameof(nickname));
-        if (nickname.Length > MAX_NICKNAME_LENGTH)
-            return Errors.General.InvalidLength(nameof(nickname));
+        Result<string, Error> e;
 
-        if (string.IsNullOrWhiteSpace(breed))
-            return Errors.General.ValueIsRequired(nameof(breed));
-        if (nickname.Length > MAX_BREED_LENGTH)
-            return Errors.General.InvalidLength(nameof(breed));
+        if ((e = StringHelper.HasPayload(ref nickname, maxLength: MAX_NICKNAME_LENGTH)) 
+            .IsFailure) return e.Error;
 
-        if (string.IsNullOrWhiteSpace(color))
-            return Errors.General.ValueIsRequired(nameof(color));
-        if (nickname.Length > MAX_COLOR_LENGTH)
-            return Errors.General.InvalidLength(nameof(color));
+        if ((e = StringHelper.HasPayload(ref breed, maxLength: MAX_BREED_LENGTH))
+            .IsFailure) return e.Error;
 
-        if (string.IsNullOrWhiteSpace(peopleAttitude))
-            return Errors.General.ValueIsRequired(nameof(peopleAttitude));
+        if ((e = StringHelper.HasPayload(ref color, maxLength: MAX_COLOR_LENGTH))
+            .IsFailure) return e.Error;
 
-        if (string.IsNullOrWhiteSpace(animalAttitude))
-            return Errors.General.ValueIsRequired(nameof(animalAttitude));
+        if ((e = StringHelper.HasPayload(ref peopleAttitude, maxLength: Constraints.LONG_TITLE_LENGTH))
+            .IsFailure) return e.Error;
 
-        if (string.IsNullOrWhiteSpace(health))
-            return Errors.General.ValueIsRequired(nameof(health));
+        if ((e = StringHelper.HasPayload(ref animalAttitude, maxLength: Constraints.LONG_TITLE_LENGTH))
+            .IsFailure) return e.Error;
+
+        if ((e = StringHelper.HasPayload(ref health, maxLength: Constraints.LONG_TITLE_LENGTH))
+            .IsFailure) return e.Error;
+
+        if ((e = StringHelper.HasPayload(ref description, maxLength: Constraints.LONG_TITLE_LENGTH))
+            .IsFailure) return e.Error;
+
+        if (birthDate > DateTimeOffset.UtcNow)
+            return Errors.General.ValueIsInvalid(nameof(birthDate), "Дата опережает текущую.");
 
         return new Pet(
             nickname,
@@ -259,3 +260,4 @@ public class Pet
             DateTime.Now);
     }
 }
+

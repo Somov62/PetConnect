@@ -37,13 +37,14 @@ public record Place
     /// </summary>
     public static Result<Place, Error> Create(string place)
     {
-        if (string.IsNullOrWhiteSpace(place))
-            return Errors.General.ValueIsRequired(nameof(place));
+        Result<string, Error> e;
+        if ((e = StringHelper.HasPayload(ref place)).IsFailure)
+            return e.Error;
 
-        place = place.Trim().ToUpper();
+        place = place.ToUpper();
 
         if (_all.Any(p => p.Value == place) == false)
-            return Errors.General.ValueIsInvalid(nameof(place));
+            return Errors.General.ValueIsInvalid(nameof(place), "Неопознанное место.");
 
         return new Place(place);
     }

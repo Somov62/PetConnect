@@ -5,7 +5,7 @@ using PetConnect.Domain.Common;
 namespace PetConnect.Application.Features.Pets.GetPets;
 
 /// <summary>
-/// 
+/// Параметры для запроса странички с животными.
 /// </summary>
 public record GetPetsRequest(
     string? Nickname,
@@ -23,15 +23,15 @@ public class GetPetsRequestValidator : AbstractValidator<GetPetsRequest>
     public GetPetsRequestValidator()
     {
         RuleFor(x => x.Page)
-            .GreaterThan(0)
+            .GreaterThanWithError(0)
             .WithError(Errors.General.ValueIsInvalid(
-                nameof(GetPetsRequest.Page),
+                "{PropertyName}",
                 "пагинация начинается с 1"));
 
         RuleFor(x => x.Size)
             .GreaterThan(0)
             .WithError(Errors.General.ValueIsInvalid(
-                nameof(GetPetsRequest.Size),
+                "{PropertyName}",
                 "не меньше одного объекта в странице"));
     }
 }

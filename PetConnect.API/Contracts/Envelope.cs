@@ -1,6 +1,6 @@
 ﻿using PetConnect.Domain.Common;
 
-namespace PetConnect.API.Helpers;
+namespace PetConnect.API.Contracts;
 
 /// <summary>
 /// Класс конверт, в котором сервер возвращает ответы на запросы.

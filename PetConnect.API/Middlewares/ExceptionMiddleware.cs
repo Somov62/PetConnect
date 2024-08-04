@@ -1,4 +1,4 @@
-﻿using PetConnect.API.Helpers;
+﻿using PetConnect.API.Contracts;
 using PetConnect.Domain.Common;
 using System.Net;
 
@@ -10,27 +10,17 @@ namespace PetConnect.API.Middlewares;
 public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
 {
     /// <summary>
-    /// Делегат следующего шага обработки запроса.
-    /// </summary>
-    private readonly RequestDelegate _next = next;
-
-    /// <summary>
-    /// Логгер для фиксирования исключений.
-    /// </summary>
-    private readonly ILogger<ExceptionMiddleware> _logger = logger;
-
-    /// <summary>
     /// Обертка для отлавливания исключений.
     /// </summary>
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            logger.LogError(ex.Message);
 
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             context.Response.ContentType = "application/json";

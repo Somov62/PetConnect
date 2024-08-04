@@ -10,10 +10,8 @@ namespace PetConnect.API.Controllers;
 [Route("[controller]")]
 public class PetController : ApplicationController
 {
-    
-
     /// <summary>
-    /// 
+    /// Возвращает сущности постранично.
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetByPage(

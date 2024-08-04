@@ -5,6 +5,10 @@ using PetConnect.Domain.Entities;
 using PetConnect.Infrastructure.DbContexts;
 
 namespace PetConnect.Infrastructure.Repositories;
+
+/// <summary>
+/// Реализация репозитория сущности волонтера.
+/// </summary>
 public class VolunteerRepository(PetConnectWriteDbContext dbContext) : IVolunteerRepository
 {
     /// <inheritdoc/>
@@ -30,7 +34,7 @@ public class VolunteerRepository(PetConnectWriteDbContext dbContext) : IVoluntee
         var changedRows = await dbContext.SaveChangesAsync(cancellationToken);
 
         return changedRows == 0 ?
-            Errors.Database.SaveProblem("Волонтер") :
+            Errors.Database.SaveFailure("Волонтер") :
             volunteer.Id;
     }
 }

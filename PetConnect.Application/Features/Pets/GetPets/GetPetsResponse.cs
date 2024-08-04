@@ -3,6 +3,6 @@
 namespace PetConnect.Application.Features.Pets.GetPets;
 
 /// <summary>
-/// Объект ответа на запрос страницы сущностей.
+/// Ответ на запрос страницы сущностей.
 /// </summary>
 public record GetPetsResponse(IEnumerable<PetDto> Pets, int TotalCount);

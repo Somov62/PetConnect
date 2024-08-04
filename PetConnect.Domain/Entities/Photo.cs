@@ -1,7 +1,7 @@
 ﻿namespace PetConnect.Domain.Entities;
 
 /// <summary>
-/// 
+/// Модель фотографии.
 /// </summary>
 public class Photo
 {
@@ -15,17 +15,17 @@ public class Photo
     }
 
     /// <summary>
-    /// 
+    /// Уникальный идентификатор.
     /// </summary>
     public Guid Id { get; private set; }
 
     /// <summary>
-    /// 
+    /// Путь к файлу.
     /// </summary>
     public string Path { get; private set; } = null!;
 
     /// <summary>
-    /// 
+    /// Главное фото.
     /// </summary>
     public bool IsMain { get; set; }
 }

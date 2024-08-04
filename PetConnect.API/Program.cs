@@ -18,11 +18,13 @@ builder.Services
 // Авто валидация для ДТО, попадающих в контроллер в теле запроса.
 builder.Services.AddFluentValidationAutoValidation(configuration =>
 {
+    configuration.DisableBuiltInModelValidation = true;
     configuration.OverrideDefaultResultFactoryWith<CustomResultFactory>();
 });
 
 var app = builder.Build();
 
+// Глобальный обработчик исключений.
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpLogging();
 

@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using PetConnect.Application.Features.Pets;
 using PetConnect.Domain.Common;
 using PetConnect.Domain.Entities;
 using PetConnect.Domain.ValueObjects;
@@ -16,13 +15,12 @@ public class CreatePetService(IVolunteerRepository repository)
     /// </summary>
     public async Task<Result<Guid, Error>> Execute(CreatePetRequest request, CancellationToken cancellationToken)
     {
-        var volunteerResult = await repository.GetById(request.VolunteerId, cancellationToken);
+         var volunteerResult = await repository.GetById(request.VolunteerId, cancellationToken);
 
         if (volunteerResult.IsFailure)
             return volunteerResult.Error;
 
         var volunteer = volunteerResult.Value;
-
 
 
         // Инстанцируем value-objects.

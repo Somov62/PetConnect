@@ -16,12 +16,12 @@ public class SocialMedias
        string telegram,
        string vk,
        string whatsApp,
-       IReadOnlyList<SocialMedia> others)
+       IEnumerable<SocialMedia> others)
     {
         Telegram = telegram;
         VK = vk;
         WhatsApp = whatsApp;
-        Others = others;
+        Others = others.ToList();
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class SocialMedias
         IEnumerable<SocialMedia> others)
     {
         // валидировать в целом пока нечего.
-        return new SocialMedias(telegram, vk, whatsApp, others.ToList());
+        return new SocialMedias(telegram, vk, whatsApp, others ?? []);
     }
 }
 
@@ -92,11 +92,13 @@ public class SocialMedia
     /// </summary>
     public static Result<SocialMedia, Error> Create(string link, string title)
     {
-        if (string.IsNullOrWhiteSpace(link))
-            return Errors.General.ValueIsRequired(nameof(link));
+        Result<string, Error> e;
 
-        if (string.IsNullOrWhiteSpace(title))
-            return Errors.General.ValueIsRequired(nameof(title));
+        if ((e = StringHelper.HasPayload(ref link, maxLength: Constraints.LONG_TITLE_LENGTH))
+            .IsFailure) return e.Error;
+
+        if ((e = StringHelper.HasPayload(ref title, maxLength: Constraints.LONG_TITLE_LENGTH))
+            .IsFailure) return e.Error;
 
         return new SocialMedia(link, title);
     }

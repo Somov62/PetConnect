@@ -1,4 +1,6 @@
-﻿using PetConnect.Domain.ValueObjects;
+﻿using CSharpFunctionalExtensions;
+using PetConnect.Domain.Common;
+using PetConnect.Domain.ValueObjects;
 
 namespace PetConnect.Domain.Entities;
 
@@ -12,9 +14,9 @@ public class Volunteer
     public Volunteer(
         string name,
         string description,
-        string donationInfo,
+        string? donationInfo,
         int years,
-        int successFoundHomeForPetCount,
+        int? successFoundHomeForPetCount,
         bool fromShelter,
         SocialMedias socialMedias)
     {
@@ -48,7 +50,7 @@ public class Volunteer
     /// <summary>
     /// 
     /// </summary>
-    public string DonationInfo { get; private set; } = string.Empty;
+    public string? DonationInfo { get; private set; } = string.Empty;
 
 
 
@@ -60,7 +62,7 @@ public class Volunteer
     /// <summary>
     /// 
     /// </summary>
-    public int SuccessFoundHomeForPetCount { get; private set; }
+    public int? SuccessFoundHomeForPetCount { get; private set; }
 
     /// <summary>
     /// 
@@ -99,5 +101,44 @@ public class Volunteer
     public void PublishPet(Pet pet)
     {
         _pets.Add(pet);
+    }
+
+    /// <summary>
+    /// Создание волонтера с валидацией.
+    /// </summary>
+    public static Result<Volunteer, Error> Create(
+      string name,
+      string description,
+      int yearsExperience,
+      int? successFoundHomeForPetCount,
+      string? donationInfo,
+      bool fromShelter,
+      SocialMedias socialMedias)
+    {
+        Result<string, Error> e;
+
+        if ((e = StringHelper.HasPayload(ref name, maxLength: Constraints.SHORT_TITLE_LENGTH))
+            .IsFailure) return e.Error;
+
+        if ((e = StringHelper.HasPayload(ref description, maxLength: Constraints.LONG_TITLE_LENGTH))
+            .IsFailure) return e.Error;
+
+        if (yearsExperience < 0)
+            return Errors.General.ValueIsInvalid(nameof(yearsExperience), "Не может быть отрицательным.");
+
+        if (successFoundHomeForPetCount < 0)
+            return Errors.General.ValueIsInvalid(nameof(successFoundHomeForPetCount), "Не может быть отрицательным.");
+
+        if (donationInfo?.Length > Constraints.LONG_TITLE_LENGTH)
+            return Errors.General.InvalidLength(nameof(donationInfo));
+
+        return new Volunteer(
+            name,
+            description,
+            donationInfo,
+            yearsExperience,
+            successFoundHomeForPetCount,
+            fromShelter,
+            socialMedias);
     }
 }

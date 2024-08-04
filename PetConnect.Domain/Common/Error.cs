@@ -1,13 +1,26 @@
-﻿using System.Xml.Linq;
-
-namespace PetConnect.Domain.Common;
+﻿namespace PetConnect.Domain.Common;
 
 /// <summary>
 /// Информация об ошибке при работе с доменной моделью.
 /// </summary>
 /// <param name="Code"> Код ошибки. </param>
 /// <param name="Message"> Сообщение о причинах. </param>
-public record Error(string Code, string Message);
+/// <param name="InvalidField"> Название поля, которое не прошло валидацию. </param>
+public record Error(string Code, string? Message, string? InvalidField = null)
+{
+    public string Serialize() => $"{Code}||{Message}||{InvalidField}";
+
+    public static Error Deserialize(string error)
+    {
+        ArgumentNullException.ThrowIfNull(error);
+
+        var parts = error.Split("||");
+        if (parts.Length < 3)
+            throw new($"Не удалось расшифровать ошибку: '{error}'");
+
+        return new(parts[0], parts[1], parts[2]);
+    }
+}
 
 
 /// <summary>
@@ -32,26 +45,21 @@ public static class Errors
         /// <summary>
         /// Ошибка "Невалидное значение".
         /// </summary>
-        public static Error ValueIsInvalid(string name, string? reason = null)
-        {
-            reason = reason == null ? string.Empty : $" - \"{reason}\"";
-            return new("value.is.invalid", $"Невалидное значение поля \"{name}\"{reason}");
-        }
+        public static Error ValueIsInvalid(string fieldName, string reason) => 
+            new("value.is.invalid", reason, fieldName);
 
         /// <summary>
         /// Ошибка "Обязательное поле".
         /// </summary>
-        public static Error ValueIsRequired(string name) =>
-            new("value.is.required", $"Поле \"{name}\" обязательное");
+        public static Error ValueIsRequired(string fieldName) =>
+            new("value.is.required", "Обязательное поле", fieldName);
 
         /// <summary>
         /// Ошибка "Неверная длина".
         /// </summary>
-        /// <param name="name"> Название поля с неверной длиной. </param>
-        public static Error InvalidLength(string? name = null)
+        public static Error InvalidLength(string? fieldName = null)
         {
-            name = name == null ? "" : $" для поля \"{name}\"";
-            return new("record.not.found", $"Неверная длина{name}");
+            return new("length.is.invalid", "Неверная длина", fieldName);
         }
     }
 
@@ -64,7 +72,7 @@ public static class Errors
         /// Ошибка при сохранении в бд.
         /// </summary>
         /// <param name="name"> Название сущности, которую не удалось сохранить. </param>
-        public static Error SaveProblem(string name) =>
-            new("save.problem", $"Ошибка сохранения \"{name}\"");
+        public static Error SaveFailure(string name) =>
+            new("record.save.failure", $"Ошибка сохранения \"{name}\"");
     }
 }
