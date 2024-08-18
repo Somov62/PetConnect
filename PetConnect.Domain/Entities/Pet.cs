@@ -1,13 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using PetConnect.Domain.Common;
 using PetConnect.Domain.ValueObjects;
+using Entity = PetConnect.Domain.Common.Entity;
 
 namespace PetConnect.Domain.Entities;
 
 /// <summary>
 /// Модель объявления о животном.
 /// </summary>
-public class Pet
+public class Pet : Entity
 {
     /// <summary>
     /// Пустой конструктор для DbContext.
@@ -56,13 +57,6 @@ public class Pet
         OnTreatment = onTreatment;
         CreatedDate = createdDate;
     }
-
-    /// <summary>
-    /// Уникальный идентификатор.
-    /// </summary>
-    public Guid Id { get; private set; }
-
-
 
     /// <summary>
     /// Имя.

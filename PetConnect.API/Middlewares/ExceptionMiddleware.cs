@@ -25,7 +25,7 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             context.Response.ContentType = "application/json";
 
-            var error = new Error("server.internal", ex.Message);
+            var error = Errors.General.Internal(ex.Message);
             await context.Response.WriteAsJsonAsync(Envelope.Error(error));
         }
     }

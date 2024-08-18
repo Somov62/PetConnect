@@ -1,4 +1,6 @@
-﻿namespace PetConnect.Domain.Common;
+﻿using PetConnect.Domain.Entities;
+
+namespace PetConnect.Domain.Common;
 
 /// <summary>
 /// Информация об ошибке при работе с доменной моделью.
@@ -33,6 +35,12 @@ public static class Errors
     /// </summary>
     public static class General
     {
+        /// <summary>
+        /// Ошибка "Внутренняя ошибка сервера".
+        /// </summary>
+        public static Error Internal(string message) => 
+            new("server.internal", message);
+
         /// <summary>
         /// Ошибка "Запись не найдена".
         /// </summary>
@@ -74,5 +82,18 @@ public static class Errors
         /// <param name="name"> Название сущности, которую не удалось сохранить. </param>
         public static Error SaveFailure(string name) =>
             new("record.save.failure", $"Ошибка сохранения \"{name}\"");
+    }
+
+    /// <summary>
+    /// Ошибки при работе с моделью волонтера.
+    /// </summary>
+    public static class Volunteers
+    {
+        /// <summary>
+        /// Ошибка при попытке добавить больше фоток, чем разрешено.
+        /// </summary>
+        /// <param name="name"> Название сущности, которую не удалось сохранить. </param>
+        public static Error PhotoCountLimit() =>
+            new("volunteers.photo.limit", $"Превышено максимально разрешенное количество фотографий ({Volunteer.PHOTO_COUNT_LIMIT}).");
     }
 }

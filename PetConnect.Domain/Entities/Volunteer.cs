@@ -1,13 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using PetConnect.Domain.Common;
 using PetConnect.Domain.ValueObjects;
+using Entity = PetConnect.Domain.Common.Entity;
 
 namespace PetConnect.Domain.Entities;
 
 /// <summary>
 /// Модель волонтёра.
 /// </summary>
-public class Volunteer
+public class Volunteer : Entity
 {
     private Volunteer() { }
 
@@ -28,14 +29,6 @@ public class Volunteer
         FromShelter = fromShelter;
         SocialMedias = socialMedias;
     }
-
-
-    /// <summary>
-    /// Уникальный идентификатор.
-    /// </summary>
-    public Guid Id { get; private set; }
-
-
 
     /// <summary>
     /// 
@@ -98,10 +91,25 @@ public class Volunteer
     /// <summary>
     /// Опубликовать объявление о животном от лица волонтёра.
     /// </summary>
-    public void PublishPet(Pet pet)
+    public void PublishPet(Pet pet) => _pets.Add(pet);
+
+    /// <summary>
+    /// Разрешенное количество фотографий.
+    /// </summary>
+    public const int PHOTO_COUNT_LIMIT = 5;
+    /// <summary>
+    /// Добавляет фото волонтеру.
+    /// </summary>
+    public Result<Unit, Error> AddPhoto(Photo photo)
     {
-        _pets.Add(pet);
+        if (_photos.Count >= PHOTO_COUNT_LIMIT)
+            return Errors.Volunteers.PhotoCountLimit();
+
+        _photos.Add(photo);
+
+        return new();
     }
+
 
     /// <summary>
     /// Создание волонтера с валидацией.

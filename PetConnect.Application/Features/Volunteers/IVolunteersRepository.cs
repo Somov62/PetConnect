@@ -7,7 +7,7 @@ namespace PetConnect.Application.Features.Volunteers;
 /// <summary>
 /// Репозиторий для взаимодействия сервисов с сущностями волонтера.
 /// </summary>
-public interface IVolunteerRepository
+public interface IVolunteersRepository
 {
     /// <summary>
     /// Добавляет информацию о волонтере в систему.
@@ -20,7 +20,7 @@ public interface IVolunteerRepository
     Task<Result<Volunteer, Error>> GetById(Guid id, CancellationToken cancellation);
         
     /// <summary>
-    /// Сохраняет изменения в переданной сущности.
+    /// Сохраняет изменения.
     /// </summary>
-    Task<Result<Guid, Error>> Save(Volunteer volunteer, CancellationToken cancellation);
+    Task<Result<int, Error>> Save(CancellationToken cancellation);
 }

@@ -1,9 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Minio;
+using PetConnect.Abstractions;
 using PetConnect.Application.Features.Pets;
 using PetConnect.Application.Features.Volunteers;
 using PetConnect.Infrastructure.DbContexts;
+using PetConnect.Infrastructure.Options;
 using PetConnect.Infrastructure.Queries.Pets;
 using PetConnect.Infrastructure.Repositories;
+using PetConnect.Infrastructure.Tools;
 
 namespace PetConnect.Infrastructure;
 
@@ -15,20 +20,31 @@ public static class DependencyRegistration
     /// <summary>
     /// Регистрация зависимостей слоя Infrastructure.
     /// </summary>
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services) =>
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration) =>
         services
-            .AddDataBase()
+            .AddDataStorages(configuration)
             .AddRepositories()
-            .AddQueries();
+            .AddQueries()
+            .AddProviders()
+            ;
 
 
     /// <summary>
-    /// Регистрация контекстов бд.
+    /// Регистрация хранилищ данных.
     /// </summary>
-    public static IServiceCollection AddDataBase(this IServiceCollection services) =>
+    public static IServiceCollection AddDataStorages(this IServiceCollection services, IConfiguration configuration) =>
         services
             .AddScoped<PetConnectReadDbContext>()
             .AddScoped<PetConnectWriteDbContext>()
+            .AddMinio(configureClient: options =>
+            {
+                var minioOptions = configuration.GetSection(MinioOptions.Minio)
+                    .Get<MinioOptions>() ?? throw new("Minio configuration not found");
+
+                options.WithEndpoint(minioOptions.Endpoint);
+                options.WithCredentials(minioOptions.AccessKey, minioOptions.SecretKey);
+                options.WithSSL(false);
+            })
             ;
 
 
@@ -38,7 +54,7 @@ public static class DependencyRegistration
     public static IServiceCollection AddRepositories(this IServiceCollection services) =>
         services
             .AddScoped<IPetsRepository, PetsRepository>()
-            .AddScoped<IVolunteerRepository, VolunteerRepository>()
+            .AddScoped<IVolunteersRepository, VolunteerRepository>()
             ;
 
 
@@ -48,5 +64,14 @@ public static class DependencyRegistration
     public static IServiceCollection AddQueries(this IServiceCollection services) =>
         services
             .AddScoped<GetPetsQuery>()
+            ;
+
+
+    /// <summary>
+    /// Регистрация поставщиков сторонних сервисов.
+    /// </summary>
+    public static IServiceCollection AddProviders(this IServiceCollection services) =>
+        services
+            .AddScoped<IMinioProvider, MinioProvider>()
             ;
 }

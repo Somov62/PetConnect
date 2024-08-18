@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Minio;
+using Minio.DataModel.Args;
 using PetConnect.Application.Features.Volunteers.CreatePet;
 using PetConnect.Application.Features.Volunteers.CreateVolunteer;
+using PetConnect.Application.Features.Volunteers.UploadPhoto;
+using PetConnect.Domain.Common;
 
 namespace PetConnect.API.Controllers;
 
@@ -15,7 +20,7 @@ public partial class VolunteerController : ApplicationController
     /// </summary>
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
-        [FromServices] CreateVolunteerService createVolunteerService,
+        [FromServices] CreateVolunteerHandler createVolunteerService,
         [FromBody] CreateVolunteerRequest request,
         CancellationToken cancellationToken)
     {
@@ -33,7 +38,7 @@ public partial class VolunteerController : ApplicationController
     /// </summary>
     [HttpPost("pet")]
     public async Task<ActionResult<Guid>> Create(
-        [FromServices] CreatePetService createPetService,
+        [FromServices] CreatePetHandler createPetService,
         [FromBody] CreatePetRequest request,
         CancellationToken cancellationToken)
     {
@@ -43,6 +48,41 @@ public partial class VolunteerController : ApplicationController
             return BadRequest(idResult.Error);
 
         return Ok(idResult.Value);
+    }
+
+
+    /// <summary>
+    ///Загружает фотографию волонтеру .
+    /// </summary>
+    [HttpPost("photo")]
+    public async Task<ActionResult> UploadPhoto(
+        [FromForm] UploadVolunteerPhotoRequest request,
+        [FromServices] UploadVolunteerPhotoHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var path = await handler.Handle(request, cancellationToken);
+
+        return path.IsSuccess ?
+            Ok(path.Value) :
+            BadRequest(path.Error);
+    }
+
+    /// <summary>
+    ///Загружает фотографию волонтеру.
+    /// </summary>
+    [HttpGet("photo")]
+    public async Task<ActionResult> GetPhoto(
+        string name,
+        [FromServices] IMinioClient client,
+        CancellationToken cancellationToken)
+    {
+        var presignedGetObjectArgs = new PresignedGetObjectArgs()
+            .WithBucket("images")
+            .WithObject(name)
+            .WithExpiry(60*60*24);
+        
+        var url = await client.PresignedGetObjectAsync(presignedGetObjectArgs);
+        return Ok(url);
     }
 }
 

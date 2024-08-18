@@ -8,7 +8,7 @@ namespace PetConnect.Application.Features.Volunteers.CreateVolunteer;
 /// <summary>
 /// Сервис для работы с сущностью волонтера <see cref="Volunteer"/>
 /// </summary>
-public class CreateVolunteerService(IVolunteerRepository repository)
+public class CreateVolunteerHandler(IVolunteersRepository repository)
 {
     /// <summary>
     /// Добавляет информацию о животном в систему.
@@ -32,7 +32,11 @@ public class CreateVolunteerService(IVolunteerRepository repository)
                                       );
 
         await repository.Add(volunteer, cancellationToken);
-        return await repository.Save(volunteer, cancellationToken);
+        var saveResult = await repository.Save(cancellationToken);
+        if (saveResult.IsFailure)
+            return saveResult.Error;
+
+        return volunteer.Id;
     }
 
 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using PetConnect.Application.Features.Volunteers.CreatePet;
 using PetConnect.Application.Features.Volunteers.CreateVolunteer;
+using PetConnect.Application.Features.Volunteers.UploadPhoto;
 
 namespace PetConnect.Application;
 
@@ -24,7 +25,8 @@ public static class DependencyRegistration
     /// </summary>
     private static IServiceCollection AddServices(this IServiceCollection services) =>
         services
-            .AddScoped<CreatePetService>()
-            .AddScoped<CreateVolunteerService>()
+            .AddScoped<CreatePetHandler>()
+            .AddScoped<CreateVolunteerHandler>()
+            .AddScoped<UploadVolunteerPhotoHandler>()
             ;
 }
